@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Maanya’s Birthday 💗</title>
+
+  <style>
+    :root{
+      --eggshell:#fbf7f2;
+      --pink:#ff6fae;
+      --pink2:#ffd1e3;
+      --text:#2a2230;
+      --card:#ffffffcc;
+      --shadow: 0 18px 45px rgba(20,10,30,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: var(--eggshell);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      padding:20px;
+    }
+    .card{
+      width:100%;
+      max-width:700px;
+      background:white;
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      border:1px solid rgba(255,111,174,.3);
+      overflow:hidden;
+    }
+    header{
+      padding:22px;
+      text-align:center;
+      background:linear-gradient(180deg,#ffe3f0,#fff);
+    }
+    h1{
+      margin:0;
+      font-size:24px;
+    }
+    p{margin:8px 0 0; opacity:.85}
+
+    main{padding:20px}
+    .step{display:none}
+    .step.active{display:block}
+
+    .question{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:12px;
+    }
+    .options{
+      display:grid;
+      gap:10px;
+    }
+    label{
+      padding:14px;
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,.1);
+      cursor:pointer;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      transition:.15s;
+    }
+    label:hover{
+      border-color:var(--pink);
+      background:#fff5fa;
+    }
+    input{accent-color:var(--pink)}
+
+    .nav{
+      display:flex;
+      justify-content:space-between;
+      padding:16px;
+    }
+    button{
+      padding:12px 16px;
+      border:none;
+      border-radius:14px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    .primary{
+      background:var(--pink);
+      color:white;
+    }
+    .ghost{
+      background:#ffe3f0;
+    }
+    button:disabled{opacity:.5}
+
+    .result{
+      background:#fff5fa;
+      padding:16px;
+      border-radius:16px;
+      border:1px solid rgba(255,111,174,.3);
+      white-space:pre-wrap;
+      margin-bottom:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <header>
+      <h1>Maanya’s birthday 🎉</h1>
+      <p>I love you my Indian girl 💗</p>
+    </header>
+
+    <main>
+      <!-- STEP 1 -->
+      <section class="step active">
+        <div class="question">🍽️ What do you want to eat?</div>
+        <div class="options">
+          <label><input type="radio" name="food" value="Italian"> Italian</label>
+          <label><input type="radio" name="food" value="Chinese"> Chinese</label>
+          <label><input type="radio" name="food" value="Indian"> Indian</label>
+          <label><input type="radio" name="food" value="Sushi"> Sushi</label>
+        </div>
+      </section>
+
+      <!-- STEP 2 -->
+      <section class="step">
+        <div class="question">🌸 What do you want to do first?</div>
+        <div class="options">
+          <label><input type="radio" name="first" value="Romantic walk"> Romantic walk</label>
+          <label><input type="radio" name="first" value="Movie"> Movie</label>
+          <label><input type="radio" name="first" value="Mall"> Mall</label>
+        </div>
+      </section>
+
+      <!-- STEP 3 -->
+      <section class="step">
+        <div class="question">✨ How would you like to end the day?</div>
+        <div class="options">
+          <label><input type="radio" name="end" value="Look at the stars"> Look at the stars</label>
+          <label><input type="radio" name="end" value="Drink"> Drink</label>
+          <label><input type="radio" name="end" value="Smoke"> Smoke</label>
+          <label><input type="radio" name="end" value="All of the above"> All of the above</label>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="step">
+        <div class="question">💗 Birthday Plan Locked In 💗</div>
+        <div class="result" id="result"></div>
+
+        <button class="ghost" onclick="copyPlan()">📋 Copy</button>
+        <button class="primary" onclick="sendPlan()">💌 Send results</button>
+      </section>
+    </main>
+
+    <div class="nav">
+      <button class="ghost" id="back">← Back</button>
+      <button class="primary" id="next">Next →</button>
+    </div>
+  </div>
+
+<script>
+  const steps = document.querySelectorAll(".step");
+  let current = 0;
+
+  const nextBtn = document.getElementById("next");
+  const backBtn = document.getElementById("back");
+  const resultBox = document.getElementById("result");
+
+  function getVal(name){
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : "";
+  }
+
+  function showStep(){
+    steps.forEach((s,i)=>s.classList.toggle("active",i===current));
+    backBtn.disabled = current === 0;
+    nextBtn.textContent = current === steps.length-1 ? "Restart ↺" : "Next →";
+  }
+
+  nextBtn.onclick = ()=>{
+    if(current === steps.length-1){
+      location.reload();
+      return;
+    }
+    current++;
+    if(current === steps.length-1){
+      const plan =
+`💗 Maanya’s Birthday Plan 💗
+• Food: ${getVal("food")}
+• First: ${getVal("first")}
+• End: ${getVal("end")}
+
+Approved by the birthday queen 😌💗`;
+      resultBox.textContent = plan;
+    }
+    showStep();
+  };
+
+  backBtn.onclick = ()=>{
+    if(current>0){current--; showStep();}
+  };
+
+  function copyPlan(){
+    navigator.clipboard.writeText(resultBox.textContent);
+    alert("Copied 💗");
+  }
+
+  function sendPlan(){
+    const sms = `sms:&body=${encodeURIComponent(resultBox.textContent)}`;
+    window.location.href = sms;
+  }
+
+  showStep();
+</script>
+</body>
+</html>
